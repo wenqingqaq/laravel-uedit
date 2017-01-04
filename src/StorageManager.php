@@ -29,7 +29,7 @@ class StorageManager extends Manager
      */
     public function upload(Request $request)
     {
-        dd('test222');
+        dd('file test');
         $config = $this->getUploadConfig($request->get('action'));
 
         if (!$request->hasFile($config['field_name'])) {

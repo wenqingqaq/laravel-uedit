@@ -1,90 +1,73 @@
-<?php namespace Stevenyangecho\UEditor;
+<?php
+/**
+ * UEditorServiceProvider.php.
+ *
+ * This file is part of the laravel-ueditor.
+ *
+ * (c) overtrue <i@overtrue.me>
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+namespace Overtrue\LaravelUEditor;
 
-
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+
+/**
+ * Class UEditorServiceProvider.
+ */
 class UEditorServiceProvider extends ServiceProvider
 {
-
-
     /**
-     * Indicates if loading of the provider is deferred.
+     * Bootstrap any application services.
      *
-     * @var bool
+     * @param \Illuminate\Routing\Router $router
      */
-    protected $defer = false;
-
-    /**
-     * Bootstrap the application events.
-     *
-     *
-     * @return void
-     */
-    public function boot()
+    public function boot(Router $router)
     {
-
-
-        $viewPath = realpath(__DIR__ . '/../resources/views');
-        $this->loadViewsFrom($viewPath, 'UEditor');
-        $this->publishes([
-            realpath(__DIR__ . '/../resources/views') => base_path('resources/views/vendor/UEditor'),
-        ], 'view');
-
+        $this->loadViewsFrom(__DIR__.'/views', 'ueditor');
+        $this->loadTranslationsFrom(__DIR__.'/translations', 'ueditor');
 
         $this->publishes([
-            realpath(__DIR__ . '/../resources/public') => public_path() . '/laravel-u-editor',
+            __DIR__.'/config/ueditor.php' => config_path('ueditor.php'),
+        ], 'config');
+
+        $this->publishes([
+            __DIR__.'/assets/ueditor' => public_path('vendor/ueditor'),
         ], 'assets');
 
+        $this->publishes([
+            __DIR__.'/views' => base_path('resources/views/vendor/ueditor'),
+            __DIR__.'/translations' => base_path('resources/lang/vendor/ueditor'),
+        ], 'resources');
 
-        $this->loadTranslationsFrom(realpath(__DIR__ . '/../resources/lang'), 'UEditor');
+        $this->registerRoute($router);
+    }
 
+    /**
+     * Register any application services.
+     */
+    public function register()
+    {
+        $this->mergeConfigFrom(__DIR__.'/config/ueditor.php', 'ueditor');
 
-        //定义多语言
-        //根据系统配置 取得 local
-        $locale = str_replace('_', '-', strtolower(config('app.locale')));
-        $file = "/laravel-u-editor/lang/$locale/$locale.js";
-        $filePath = public_path() . $file;
-
-        if (!\File::exists($filePath)) {
-            //Default is zh-cn
-            $file = "/laravel-u-editor/lang/zh-cn/zh-cn.js";
-        }
-        \View::share('UeditorLangFile', $file);
-
-        $router = app('router');
-        //need add auth
-        $config = config('UEditorUpload.core.route', []);
-        $config['namespace'] = __NAMESPACE__;
-
-
-        //定义路由
-        $router->group($config, function ($router) {
-            $router->any('/laravel-u-editor-server/server', 'Controller@server');
+        $this->app->singleton('ueditor.storage', function ($app) {
+            return new StorageManager($app);
         });
     }
 
     /**
-     * Register the service provider.
+     * Register routes.
      *
-     * @return void
+     * @param $router
      */
-    public function register()
+    protected function registerRoute($router)
     {
-
-        $configPath = realpath(__DIR__ . '/../config/UEditorUpload.php');
-        $this->mergeConfigFrom($configPath, 'UEditorUpload');
-        $this->publishes([$configPath => config_path('UEditorUpload.php')], 'config');
-
+        if (!$this->app->routesAreCached()) {
+            $router->group(['namespace' => __NAMESPACE__], function ($router) {
+                $router->any(config('ueditor.route.name', '/ueditor/server'), 'UEditorController@serve');
+            });
+        }
     }
-
-
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-
-    }
-
 }

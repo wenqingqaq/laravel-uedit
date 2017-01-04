@@ -1,32 +1,20 @@
 {
-  "name": "wenqing/laravel-u-editor",
-  "description": "UEditor for laravel5. Support i18n. UEditor is a Rich Text Web Editor From Baidu.",
-  "keywords": [
-    "laravel",
-    "ueditor",
-    "laravel-u-editor",
-    "laravel5 web text editor",
-    "wenqing"
-  ],
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "wenqing",
-      "email": "1169125055@qq.com"
+    "name": "overtrue/laravel-ueditor",
+    "description": "UEditor integration for Laravel.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "overtrue",
+            "email": "anzhengchao@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4":{
+            "Overtrue\\LaravelUEditor\\":"src/"
+        }
+    },
+    "require": {},
+    "require-dev": {
+        "fabpot/php-cs-fixer": "^1.10"
     }
-  ],
-
-  "require": {
-    "php": ">=5.4.0",
-    "ext-fileinfo": "*",
-    "illuminate/support": "5.*",
-    "qiniu/php-sdk": "7.*"
-  },
-  "autoload": {
-    "psr-4": {
-      "Stevenyangecho\\UEditor\\": "src/"
-    }
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
 }

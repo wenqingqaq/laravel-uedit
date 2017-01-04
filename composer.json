@@ -1,16 +1,16 @@
 {
-    "name": "overtrue/laravel-ueditor",
+    "name": "wenqing/laravel-ueditor",
     "description": "UEditor integration for Laravel.",
     "license": "MIT",
     "authors": [
         {
-            "name": "overtrue",
-            "email": "anzhengchao@gmail.com"
+            "name": "wenqing",
+            "email": "1169125055@qq.com"
         }
     ],
     "autoload": {
         "psr-4":{
-            "Overtrue\\LaravelUEditor\\":"src/"
+            "Wenqing\\LaravelUEditor\\":"src/"
         }
     },
     "require": {},
